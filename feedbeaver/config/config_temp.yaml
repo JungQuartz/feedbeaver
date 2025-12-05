@@ -1,0 +1,27 @@
+# 订阅的 RSS 列表
+rss_list:
+  - "https://www.xxxx.com/feeds/videos.xml?channel_id=xxx"
+
+# 检查周期（秒）
+check_interval: 300   # 5分钟查一次
+
+# 下载目录
+download_path: "/xxxxx"
+
+# 文件名格式（yt-dlp 的 outtmpl）
+filename_template: "%(title)s_%(upload_date)s.%(ext)s"
+
+# cookie 文件
+cookie_file: "./cookie.txt"
+
+# 是否跳过已下载的视频（强烈推荐 true）
+skip_downloaded: true
+
+# yt-dlp 的额外参数（你可以自己扩展）
+yt_dlp_options:
+  format: "bv*+ba/b"        # 自动选择最佳画质
+  retries: 10               # 遇到网络问题多重试几次
+  fragment_retries: 10
+  hls_use_mpegts: false     # 默认即可
+  no_warnings: true
+  ignoreerrors: true
