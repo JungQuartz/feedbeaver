@@ -1,0 +1,96 @@
+# ---------------------------------------------------------
+# macOS system files
+# ---------------------------------------------------------
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# ---------------------------------------------------------
+# PyCharm / IntelliJ IDEA
+# ---------------------------------------------------------
+.idea/
+*.iml
+out/
+
+# ---------------------------------------------------------
+# Python
+# ---------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+*.so
+
+# Virtual environments
+venv/
+env/
+.venv/
+.pyenv/
+.python-version
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+
+# Logs / Runtime files
+*.log
+*.pid
+*.seed
+*.cover
+*.pyre/
+
+# Unit test / coverage
+htmlcov/
+.tox/
+.nox/
+.cache/
+pytest_cache/
+.pytest_cache/
+
+# Jupyter & notebooks
+.ipynb_checkpoints/
+*.ipynb
+
+# ---------------------------------------------------------
+# Config & Secrets you SHOULD NOT upload
+# ---------------------------------------------------------
+feedbeaver/config/config.yaml
+feedbeaver/cookie/cookie.txt
+*.ini
+*.local
+*.env
+.env.*
+
+# ---------------------------------------------------------
+# Media output
+# ---------------------------------------------------------
+downloads/
+output/
+tmp/
+temp/
+
+# ---------------------------------------------------------
+# OS & editor temp
+# ---------------------------------------------------------
+*.swp
+*.swo
+*.tmp
+
+# ---------------------------------------------------------
+# IDE autosave & misc
+# ---------------------------------------------------------
+*.bak
+*.orig
+
+# ---------------------------------------------------------
+# yt-dlp specific cache
+# ---------------------------------------------------------
+yt-dlp.conf
+yt-dlp.log
+.cache/
