@@ -1,47 +1,71 @@
+import time
 import feedparser
+from pathlib import Path
+from fetcher import download_video
 import json
-import os
 
 
-STATE_FILE = "states.json"
+STATE_FILE = Path(__file__).resolve().parent / "data" / "state.json"
 
 
 def load_state():
-    if os.path.exists(STATE_FILE):
-        with open(STATE_FILE, "r") as f:
-            return json.load(f)
-    return {}
+    if not STATE_FILE.exists():
+        return {}
+    try:
+        return json.loads(STATE_FILE.read_text())
+    except Exception:
+        return {}
 
 
 def save_state(state):
-    with open(STATE_FILE, "w") as f:
-        json.dump(state, f)
+    STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
+    STATE_FILE.write_text(json.dumps(state, indent=2))
 
 
-def check_rss_list(rss_list, state):
-    new_videos = []
+def check_feed(feed, state):
+    """单次检查单个 feed"""
+    print(f"[FeedBeaver] Checking: {feed['name']}")
 
-    for rss_url in rss_list:
-        feed = feedparser.parse(rss_url)
-        if not feed.entries:
+    parsed = feedparser.parse(feed["url"])
+    if not parsed.entries:
+        print(f"[FeedBeaver] No entries found: {feed['name']}")
+        return
+
+    for entry in parsed.entries:
+        video_id = entry.get("id") or entry.get("link")
+
+        if not video_id:
             continue
 
-        latest_id = state.get(rss_url)
-        entries = feed.entries
+        # 跳过已下载的逻辑（支持全局 + 单 feed）
+        if feed.get("skip_downloaded", True) and video_id in state:
+            continue
 
-        # 遇到已下载记录就停止（RSS按时间倒序）
-        for entry in entries:
-            if entry.get("id") == latest_id:
-                break
-            new_videos.append({
-                "id": entry.get("id"),
-                "title": entry.get("title"),
-                "link": entry.get("link"),
-                "published": entry.get("published"),
-                "rss": rss_url
-            })
+        # 下载视频
+        download_video(entry, feed)
 
-        # 更新最新 id
-        state[rss_url] = entries[0].get("id")
+        # 记录状态
+        state[video_id] = True
+        save_state(state)
 
-    return new_videos, state
+
+def monitor_feeds(config):
+    """循环监控所有 feed，支持独立 check_interval"""
+
+    feeds = config["feeds"]
+    state = load_state()
+
+    # 每个 feed 单独记录上次检查时间
+    last_check = {feed["url"]: 0 for feed in feeds}
+
+    while True:
+        now = time.time()
+
+        for feed in feeds:
+            interval = feed["check_interval"]
+
+            if now - last_check[feed["url"]] >= interval:
+                check_feed(feed, state)
+                last_check[feed["url"]] = now
+
+        time.sleep(2)

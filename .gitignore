@@ -94,3 +94,7 @@ temp/
 yt-dlp.conf
 yt-dlp.log
 .cache/
+
+# FeedBeaver runtime files
+feedbeaver/data/
+*.log
